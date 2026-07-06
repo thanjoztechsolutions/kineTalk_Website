@@ -1,377 +1,225 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  MessageSquare, Phone, Video, Radio, Bot, Users, Globe2, Sparkles,
-  Shield, Zap, Code2, Cpu, Braces, Rocket, ArrowRight, Check, Play,
-  Mic, MicOff, VideoOff, PhoneCall, Signal, TrendingUp, Activity,
-  Github, Twitter, Linkedin, Youtube, ChevronDown, Search, Wand2,
-  Layers, Database, Server, Cloud, BrainCircuit, Languages, PenTool,
-  BarChart3, Lock, Star, Building2, HeartPulse, GraduationCap,
-  Landmark, ShoppingBag, Plane, Gamepad2, Truck, Factory, Menu, X
+  Phone, Video, MessageSquare, Bot, Radio, Users, Shield, Zap, Code2,
+  Star, Check, ChevronDown, ArrowRight, Play, Menu, X, Server, Cloud,
+  Lock, Database, BrainCircuit, Sparkles, Search, Languages, Wand2, BarChart3,
+  PenTool, HeartPulse, Landmark, GraduationCap, ShoppingBag, Building2, Plane,
+  Gamepad2, Truck, Factory, Github, Twitter, Linkedin, Youtube, Instagram, Facebook,
+  UploadCloud, MapPin, PhoneCall, Share2, Globe2, Tag, Radio as RadioIcon, Link as LinkIcon,
+  MessageCircle, MousePointer2, ClipboardList, FileText, Mic, ScanFace, Rocket, HeadphonesIcon,
+  Award, TrendingUp, Layers
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Input } from '@/components/ui/input'
 
 const LOGO = 'https://customer-assets.emergentagent.com/job_3a995167-d953-410f-b92f-092c76b1d210/artifacts/ohiyrn57_kinetalk-logo.png'
 
-/* ---------------- Cursor Glow ---------------- */
-function CursorGlow() {
-  const [pos, setPos] = useState({ x: -400, y: -400 })
-  useEffect(() => {
-    const handler = (e) => setPos({ x: e.clientX, y: e.clientY })
-    window.addEventListener('mousemove', handler)
-    return () => window.removeEventListener('mousemove', handler)
-  }, [])
-  return (
-    <div
-      className="pointer-events-none fixed z-[100] h-[500px] w-[500px] rounded-full opacity-40 blur-3xl transition-transform duration-300"
-      style={{
-        left: pos.x - 250,
-        top: pos.y - 250,
-        background: 'radial-gradient(circle, rgba(139,92,246,0.35), rgba(59,130,246,0.15) 40%, transparent 70%)',
-      }}
-    />
-  )
-}
-
-/* ---------------- Aurora Background ---------------- */
-function Aurora() {
-  return (
-    <div className="aurora-bg">
-      <div className="aurora-blob" style={{ width: 600, height: 600, background: '#3b82f6', top: '-10%', left: '-10%' }} />
-      <div className="aurora-blob" style={{ width: 700, height: 700, background: '#8b5cf6', top: '20%', right: '-15%', animationDelay: '3s' }} />
-      <div className="aurora-blob" style={{ width: 500, height: 500, background: '#22d3ee', bottom: '-10%', left: '30%', animationDelay: '6s' }} />
-      <div className="absolute inset-0 grid-pattern radial-fade opacity-40" />
-      <div className="absolute inset-0 noise-overlay opacity-[0.03]" />
-    </div>
-  )
-}
-
-/* ---------------- Navigation ---------------- */
+/* ---------------- NAV ---------------- */
 function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
+    const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   const links = [
-    { label: 'Platform', href: '#platform' },
     { label: 'Products', href: '#products' },
-    { label: 'AI', href: '#ai' },
+    { label: 'Enterprise IM', href: '#enterprise' },
+    { label: 'Solutions', href: '#solutions' },
     { label: 'Developers', href: '#developers' },
-    { label: 'Industries', href: '#industries' },
-    { label: 'Pricing', href: '#pricing' },
+    { label: 'Features', href: '#features' },
   ]
   return (
-    <motion.nav
-      initial={{ y: -30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(1400px,95%)] rounded-2xl transition-all duration-500 ${scrolled ? 'glass-nav shadow-2xl shadow-purple-950/20' : 'bg-transparent'}`}
-    >
-      <div className="flex items-center justify-between px-5 py-3">
-        <a href="#" className="flex items-center gap-2">
-          <img src={LOGO} alt="KineTalk" className="h-8 w-auto rounded-md bg-white/95 p-1" />
-          <span className="font-display text-lg font-bold tracking-tight hidden sm:block">KineTalk</span>
-        </a>
-        <div className="hidden lg:flex items-center gap-1">
-          {links.map(l => (
-            <a key={l.label} href={l.href} className="px-4 py-2 text-sm text-white/70 hover:text-white transition rounded-lg hover:bg-white/5">
-              {l.label}
-            </a>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" className="hidden md:inline-flex text-white/80 hover:text-white hover:bg-white/5">Sign in</Button>
-          <Button className="btn-glow text-white border-0 rounded-xl px-5">
-            Start Free <ArrowRight className="ml-1.5 h-4 w-4" />
-          </Button>
-          <button onClick={() => setOpen(!open)} className="lg:hidden p-2 rounded-lg hover:bg-white/5">
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+    <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? 'bg-white/95 backdrop-blur shadow-[0_1px_0_rgba(15,23,42,0.06)]' : 'bg-white'}`}>
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+        <div className="flex items-center justify-between h-20">
+          <a href="#" className="flex items-center gap-2">
+            <img src={LOGO} alt="KineTalk" className="h-10 w-auto" />
+          </a>
+          <nav className="hidden lg:flex items-center gap-2">
+            {links.map(l => (
+              <a key={l.label} href={l.href} className="flex items-center gap-1 px-4 py-2 text-[15px] font-medium text-slate-700 hover:text-brand transition rounded-lg">
+                {l.label} <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+              </a>
+            ))}
+            <button className="px-3 py-2 text-slate-700 hover:text-brand text-2xl leading-none font-bold">…</button>
+          </nav>
+          <div className="flex items-center gap-3">
+            <button className="btn-red-outline hidden md:inline-flex items-center h-11 px-5 rounded-lg text-sm font-semibold">Contact Sales</button>
+            <button className="btn-red-solid inline-flex items-center h-11 px-5 rounded-lg text-sm font-semibold">Request Demo</button>
+            <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-slate-700">
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </div>
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden overflow-hidden border-t border-white/10"
-          >
+          <motion.div initial={{height:0}} animate={{height:'auto'}} exit={{height:0}} className="lg:hidden overflow-hidden border-t border-slate-100">
             <div className="p-4 space-y-1">
-              {links.map(l => (
-                <a key={l.label} href={l.href} onClick={() => setOpen(false)} className="block px-4 py-3 rounded-lg text-white/80 hover:bg-white/5">
-                  {l.label}
-                </a>
+              {links.map(l=>(
+                <a key={l.label} href={l.href} onClick={()=>setOpen(false)} className="block px-4 py-3 rounded-lg text-slate-700 hover:bg-lavender">{l.label}</a>
               ))}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </header>
   )
 }
 
-/* ---------------- Hero Dashboard (right side) ---------------- */
-function HeroDashboard() {
+/* ---------------- HERO ---------------- */
+function Hero() {
   return (
-    <div className="relative w-full h-[560px]">
-      {/* Ambient glow */}
+    <section className="relative pt-32 pb-20 overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-8 right-4 w-80 h-80 rounded-full bg-purple-500/30 blur-[100px]" />
-        <div className="absolute bottom-8 left-4 w-72 h-72 rounded-full bg-cyan-400/25 blur-[100px]" />
+        <div className="absolute top-20 -left-40 w-[500px] h-[500px] rounded-full bg-blue-100/50 blur-3xl" />
+        <div className="absolute top-40 -right-40 w-[500px] h-[500px] rounded-full bg-red-50 blur-3xl" />
       </div>
-
-      {/* Main chat panel */}
-      <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.9, ease: 'easeOut' }}
-        className="absolute left-2 top-6 w-[62%] rounded-3xl glass-strong p-5 glow-blue animate-float-slower"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="relative">
-              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center text-xs font-bold">AI</div>
-              <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-[#0a0a14]" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold">KineTalk Agent</div>
-              <div className="text-[11px] text-emerald-400 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" /> Online
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{duration:0.5}} className="inline-flex items-center gap-2 rounded-full bg-lavender-2 px-4 py-1.5 mb-6">
+              <span className="h-2 w-2 rounded-full bg-brand animate-pulse" />
+              <span className="text-xs font-semibold text-brand">NEW · AI VOICE AGENT V2 IS LIVE</span>
+            </motion.div>
+            <motion.h1 initial={{opacity:0, y:30}} animate={{opacity:1, y:0}} transition={{duration:0.7}} className="font-display text-5xl md:text-6xl lg:text-[68px] font-bold leading-[1.05] tracking-tight text-slate-900">
+              Build <span className="text-brand">AI-Powered</span> Conversations That Scale To <span className="highlight-yellow">Millions</span>
+            </motion.h1>
+            <motion.p initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{duration:0.7, delay:0.15}} className="mt-6 text-lg text-slate-600 max-w-xl leading-relaxed">
+              One communication platform. Infinite possibilities. Launch chat, voice, video, AI agents and customer engagement — faster than ever.
+            </motion.p>
+            <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{duration:0.7, delay:0.3}} className="mt-8 flex flex-wrap gap-3">
+              <button className="btn-red-solid inline-flex items-center h-12 px-7 rounded-lg text-base font-semibold">Request Demo <ArrowRight className="ml-2 h-4 w-4" /></button>
+              <button className="btn-red-outline inline-flex items-center h-12 px-7 rounded-lg text-base font-semibold">Contact Sales</button>
+              <button className="inline-flex items-center h-12 px-6 rounded-lg text-base font-semibold text-brand hover:bg-lavender transition"><Play className="mr-2 h-4 w-4" /> Watch Video</button>
+            </motion.div>
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5}} className="mt-10 flex items-center gap-6 flex-wrap">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_,i)=><Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
+                </div>
+                <span className="text-sm font-semibold text-slate-900">4.5</span>
+                <span className="text-xs text-slate-500">on G2</span>
               </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg glass grid place-items-center"><Phone className="h-4 w-4" /></div>
-            <div className="h-8 w-8 rounded-lg glass grid place-items-center"><Video className="h-4 w-4" /></div>
-          </div>
-        </div>
-        <div className="space-y-2.5">
-          {[
-            { me: false, t: 'Hi! I need to reset my card PIN.' },
-            { me: true, t: 'Sure, I can help with that. Verifying identity…' },
-            { me: false, t: 'Great, thanks!' },
-            { me: true, t: 'Done. A secure link was sent to your phone ✨' },
-          ].map((m, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: m.me ? 20 : -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 + i * 0.2 }}
-              className={`flex ${m.me ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`max-w-[75%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed ${m.me ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-br-sm' : 'glass rounded-bl-sm text-white/90'}`}>
-                {m.t}
+              <div className="text-sm text-slate-500">Based on <span className="font-semibold text-slate-900">100+ reviews</span></div>
+              <div className="flex gap-2">
+                {['Clutch','G2','Capterra'].map(x=><span key={x} className="h-8 w-8 rounded-full bg-lavender-2 grid place-items-center text-[10px] font-bold text-brand">{x[0]}</span>)}
               </div>
             </motion.div>
-          ))}
-          <div className="flex justify-start">
-            <div className="px-3 py-2 rounded-2xl glass">
-              <div className="flex gap-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-white/60 animate-bounce" style={{animationDelay:'0ms'}} />
-                <div className="h-1.5 w-1.5 rounded-full bg-white/60 animate-bounce" style={{animationDelay:'150ms'}} />
-                <div className="h-1.5 w-1.5 rounded-full bg-white/60 animate-bounce" style={{animationDelay:'300ms'}} />
-              </div>
-            </div>
           </div>
+          <HeroIllustration />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function HeroIllustration() {
+  return (
+    <div className="relative h-[560px] w-full">
+      {/* Chat card */}
+      <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{delay:0.3, duration:0.7}} className="absolute left-2 top-4 w-[56%] card-soft rounded-3xl p-5 animate-float">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="relative">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 grid place-items-center text-white font-bold text-sm">AI</div>
+            <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-slate-900">KineTalk Agent</div>
+            <div className="text-[11px] text-emerald-600 flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Active now</div>
+          </div>
+          <div className="ml-auto flex gap-1.5">
+            <div className="h-8 w-8 rounded-lg bg-lavender grid place-items-center"><Phone className="h-3.5 w-3.5 text-brand" /></div>
+            <div className="h-8 w-8 rounded-lg bg-lavender grid place-items-center"><Video className="h-3.5 w-3.5 text-brand" /></div>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {[
+            { me:false, t:'Hi! I need to reset my card PIN.' },
+            { me:true, t:'Sure! Verifying your identity now…' },
+            { me:false, t:'Great, thanks!' },
+            { me:true, t:'Done ✅ A secure link was sent to your phone.' },
+          ].map((m,i)=>(
+            <motion.div key={i} initial={{opacity:0, x: m.me?20:-20}} animate={{opacity:1, x:0}} transition={{delay:0.6 + i*0.15}} className={`flex ${m.me?'justify-end':'justify-start'}`}>
+              <div className={`max-w-[75%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed ${m.me?'bg-brand text-white rounded-br-md':'bg-lavender text-slate-800 rounded-bl-md'}`}>{m.t}</div>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
 
-      {/* Video call card */}
-      <motion.div
-        initial={{ y: -20, opacity: 0, scale: 0.9 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        transition={{ delay: 0.6, duration: 0.9 }}
-        className="absolute right-2 top-0 w-[46%] rounded-3xl glass-strong p-4 glow-purple animate-float-slow"
-      >
+      {/* Live video call */}
+      <motion.div initial={{opacity:0, scale:0.9}} animate={{opacity:1, scale:1}} transition={{delay:0.5, duration:0.7}} className="absolute right-0 top-0 w-[46%] card-soft rounded-3xl p-4 animate-float" style={{animationDelay:'1s'}}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="relative">
-              <span className="absolute inset-0 rounded-full pulse-ring bg-red-500/40" />
-              <span className="relative h-2 w-2 rounded-full bg-red-500 block" />
+              <span className="absolute inset-0 rounded-full pulse-ring bg-red-400/50" />
+              <span className="relative h-2 w-2 rounded-full bg-brand-red block" />
             </div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-white/70">Live • Video</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700">Live · Video Call</span>
           </div>
-          <span className="text-xs text-white/60 font-mono">14:32</span>
+          <span className="text-xs text-slate-400 font-mono">14:32</span>
         </div>
         <div className="grid grid-cols-2 gap-1.5 mb-3">
-          {['from-blue-500 to-cyan-500','from-purple-500 to-pink-500','from-emerald-500 to-teal-500','from-amber-500 to-orange-500'].map((g,i)=>(
-            <div key={i} className={`aspect-video rounded-xl bg-gradient-to-br ${g} relative overflow-hidden`}>
-              <div className="absolute inset-0 bg-black/20" />
-              <div className="absolute bottom-1 left-1.5 text-[9px] font-medium">User {i+1}</div>
+          {['from-blue-500 to-indigo-600','from-purple-500 to-pink-500','from-emerald-500 to-teal-500','from-amber-400 to-orange-500'].map((g,i)=>(
+            <div key={i} className={`aspect-video rounded-lg bg-gradient-to-br ${g} relative overflow-hidden`}>
+              <div className="absolute bottom-1 left-1.5 text-[9px] font-medium text-white/95">User {i+1}</div>
             </div>
           ))}
         </div>
         <div className="flex items-center justify-center gap-2">
-          {[Mic,Video,PhoneCall].map((Icon,i)=>(
-            <div key={i} className={`h-8 w-8 rounded-full grid place-items-center ${i===2?'bg-red-500':'glass'}`}>
-              <Icon className="h-3.5 w-3.5" />
-            </div>
-          ))}
+          <div className="h-8 w-8 rounded-full bg-lavender grid place-items-center"><Mic className="h-3.5 w-3.5 text-slate-700" /></div>
+          <div className="h-8 w-8 rounded-full bg-lavender grid place-items-center"><Video className="h-3.5 w-3.5 text-slate-700" /></div>
+          <div className="h-8 w-8 rounded-full bg-brand-red grid place-items-center"><PhoneCall className="h-3.5 w-3.5 text-white" /></div>
         </div>
       </motion.div>
 
-      {/* Analytics card */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.9, duration: 0.9 }}
-        className="absolute right-0 bottom-4 w-[48%] rounded-3xl glass-strong p-4 animate-float-slower"
-      >
+      {/* Analytics */}
+      <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{delay:0.8}} className="absolute right-4 bottom-8 w-[52%] card-soft rounded-3xl p-4 animate-float" style={{animationDelay:'2s'}}>
         <div className="flex items-center justify-between mb-2">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-white/50">Realtime Calls</div>
-            <div className="text-2xl font-display font-bold">12,847</div>
+            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Realtime Calls</div>
+            <div className="font-display text-2xl font-bold text-slate-900">12,847</div>
           </div>
-          <div className="flex items-center gap-1 text-emerald-400 text-xs">
+          <div className="flex items-center gap-1 text-emerald-600 text-xs font-semibold bg-emerald-50 px-2 py-1 rounded-md">
             <TrendingUp className="h-3 w-3" /> +24.6%
           </div>
         </div>
         <svg viewBox="0 0 200 60" className="w-full h-14">
           <defs>
-            <linearGradient id="gradLine" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="50%" stopColor="#8b5cf6" />
-              <stop offset="100%" stopColor="#22d3ee" />
-            </linearGradient>
-            <linearGradient id="gradFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
-            </linearGradient>
+            <linearGradient id="heroLine" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stopColor="#1E40FF"/><stop offset="100%" stopColor="#5B7BFF"/></linearGradient>
+            <linearGradient id="heroFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#1E40FF" stopOpacity="0.2"/><stop offset="100%" stopColor="#1E40FF" stopOpacity="0"/></linearGradient>
           </defs>
-          <path d="M0,45 C20,35 40,42 60,28 C80,18 100,32 120,22 C140,14 160,26 180,10 L200,8 L200,60 L0,60 Z" fill="url(#gradFill)" />
-          <path d="M0,45 C20,35 40,42 60,28 C80,18 100,32 120,22 C140,14 160,26 180,10 L200,8" fill="none" stroke="url(#gradLine)" strokeWidth="2" strokeLinecap="round" />
+          <path d="M0,45 C20,35 40,42 60,28 C80,18 100,32 120,22 C140,14 160,26 180,10 L200,8 L200,60 L0,60 Z" fill="url(#heroFill)"/>
+          <path d="M0,45 C20,35 40,42 60,28 C80,18 100,32 120,22 C140,14 160,26 180,10 L200,8" fill="none" stroke="url(#heroLine)" strokeWidth="2.5" strokeLinecap="round"/>
         </svg>
       </motion.div>
 
-      {/* AI Summary floating pill */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.2 }}
-        className="absolute left-0 bottom-8 w-[44%] rounded-2xl glass-strong p-3.5 animate-float-slow"
-      >
+      {/* Small AI pill */}
+      <motion.div initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} transition={{delay:1}} className="absolute left-0 bottom-0 w-[42%] card-soft rounded-2xl p-3.5 animate-float" style={{animationDelay:'0.5s'}}>
         <div className="flex items-center gap-2 mb-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
-          <span className="text-[10px] uppercase tracking-wider text-cyan-300 font-semibold">AI Summary</span>
+          <div className="h-6 w-6 rounded-lg bg-icon-chip grid place-items-center"><Sparkles className="h-3.5 w-3.5 text-brand" /></div>
+          <span className="text-[10px] uppercase tracking-wider font-bold text-brand">AI Summary</span>
         </div>
-        <p className="text-xs text-white/80 leading-relaxed">Customer resolved a PIN reset via secure link. Sentiment: positive. Handoff: none.</p>
+        <p className="text-xs text-slate-600 leading-relaxed">Customer resolved a PIN reset via secure link. Sentiment: <span className="font-semibold text-emerald-600">positive</span>.</p>
       </motion.div>
-
-      {/* Particles */}
-      {[...Array(14)].map((_,i)=>(
-        <motion.span
-          key={i}
-          className="absolute h-1 w-1 rounded-full bg-white/50"
-          style={{ left: `${(i*7)%100}%`, top: `${(i*13)%100}%` }}
-          animate={{ y: [0, -20, 0], opacity: [0.2, 0.8, 0.2] }}
-          transition={{ duration: 3 + i*0.2, repeat: Infinity, delay: i*0.15 }}
-        />
-      ))}
     </div>
   )
 }
 
-/* ---------------- Hero ---------------- */
-function Hero() {
-  return (
-    <section className="relative pt-36 pb-24 overflow-hidden">
-      <Aurora />
-      <div className="relative mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 mb-6"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-medium text-white/80">New · KineTalk AI Agent v2 is live</span>
-              <ArrowRight className="h-3 w-3" />
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight"
-            >
-              Build AI-Powered<br/>
-              <span className="gradient-text animate-gradient-x">Conversations</span><br/>
-              That Scale To Millions
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="mt-6 text-lg text-white/60 max-w-xl leading-relaxed"
-            >
-              One communication platform. Infinite possibilities. Launch chat, voice, video, AI agents, and customer engagement — faster than ever.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.45 }}
-              className="mt-8 flex flex-wrap gap-3"
-            >
-              <Button size="lg" className="btn-glow text-white rounded-xl px-7 h-12 text-base font-medium border-0">
-                Start Free <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button size="lg" variant="outline" className="h-12 px-7 rounded-xl border-white/15 bg-white/5 hover:bg-white/10 text-white backdrop-blur text-base">
-                <Play className="mr-2 h-4 w-4" /> Book Demo
-              </Button>
-              <Button size="lg" variant="ghost" className="h-12 px-6 rounded-xl text-white/80 hover:text-white hover:bg-white/5 text-base">
-                Explore APIs <Code2 className="ml-2 h-4 w-4" />
-              </Button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="mt-12 grid grid-cols-3 gap-6 max-w-xl"
-            >
-              {[
-                { v: '190+', l: 'Countries' },
-                { v: '50B+', l: 'Messages/mo' },
-                { v: '99.999%', l: 'Uptime SLA' },
-              ].map(s=>(
-                <div key={s.l}>
-                  <div className="font-display text-3xl font-bold gradient-text">{s.v}</div>
-                  <div className="text-xs text-white/50 mt-1">{s.l}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          <HeroDashboard />
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------------- Social Proof ---------------- */
-function SocialProof() {
+/* ---------------- TRUST BAR ---------------- */
+function TrustBar() {
   const logos = ['Northwind','Vertex Bank','Helia Health','Orbital','Nova Labs','Meridian','Quantify','Loop','Sapien','Zeus Pay','Nimbus','Kinetic']
   return (
-    <section className="py-14 relative">
+    <section className="py-12 border-y border-slate-100">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <p className="text-center text-xs uppercase tracking-[0.2em] text-white/40 mb-8">Trusted by teams shipping the next decade of communication</p>
-        <div className="relative overflow-hidden mask-fade">
+        <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 mb-8">Trusted by 5,000+ teams worldwide</p>
+        <div className="relative overflow-hidden" style={{maskImage:'linear-gradient(90deg, transparent, black 15%, black 85%, transparent)'}}>
           <div className="flex gap-14 animate-marquee whitespace-nowrap">
             {[...logos, ...logos].map((l,i)=>(
-              <div key={i} className="font-display text-2xl text-white/40 hover:text-white/70 transition">{l}</div>
+              <div key={i} className="font-display text-2xl text-slate-400 hover:text-brand transition">{l}</div>
             ))}
           </div>
         </div>
@@ -380,49 +228,100 @@ function SocialProof() {
   )
 }
 
-/* ---------------- Feature Grid ---------------- */
-function FeatureGrid() {
+/* ---------------- 1000+ FEATURES GRID ---------------- */
+function FeaturesGrid() {
   const features = [
-    { icon: MessageSquare, title: 'Chat SDK', desc: 'Realtime messaging with presence, typing, read receipts, threads and channels.', color: 'from-blue-500 to-cyan-500' },
-    { icon: Phone, title: 'Voice SDK', desc: 'Crystal-clear voice via WebRTC with SIP interop, IVR and call routing.', color: 'from-purple-500 to-pink-500' },
-    { icon: Video, title: 'Video SDK', desc: 'HD group video calls, screen share, recording and 1000+ participant rooms.', color: 'from-cyan-500 to-blue-500' },
-    { icon: Bot, title: 'AI Agents', desc: 'Deploy voice & chat agents powered by GPT, Claude, Gemini or your own LLM.', color: 'from-violet-500 to-purple-600' },
-    { icon: Radio, title: 'Live Streaming', desc: 'Broadcast to millions with sub-second latency and HLS/DASH support.', color: 'from-fuchsia-500 to-pink-600' },
-    { icon: Users, title: 'Contact Center', desc: 'Omnichannel routing, agent desktop, quality monitoring and AI copilots.', color: 'from-indigo-500 to-blue-600' },
-    { icon: Languages, title: 'AI Translation', desc: 'Realtime translation across 100+ languages for chat, voice and video.', color: 'from-emerald-500 to-teal-500' },
-    { icon: Shield, title: 'AI Moderation', desc: 'Detect and remove abuse, PII and toxicity across all media in realtime.', color: 'from-amber-500 to-orange-500' },
+    { icon: Users, t: 'Private and Group Chats' },
+    { icon: UploadCloud, t: 'Upload Huge Files' },
+    { icon: PhoneCall, t: 'Call Waiting/Queuing' },
+    { icon: MessageCircle, t: 'Chat Moderation' },
+    { icon: MapPin, t: 'Geolocation Sharing' },
+    { icon: Phone, t: 'Call Recording' },
+    { icon: Share2, t: 'Share Your Screen' },
+    { icon: Languages, t: 'Multi-Language Support' },
+    { icon: Tag, t: 'Custom Metadata & Tags' },
+    { icon: RadioIcon, t: 'Public & Private Channels' },
+    { icon: LinkIcon, t: 'Join Via Link' },
+    { icon: Bot, t: 'AI Chatbot' },
+    { icon: Mic, t: 'AI Voice Agent' },
+    { icon: Wand2, t: 'Smart Replies' },
+    { icon: MousePointer2, t: 'Click-to-Call' },
+    { icon: Shield, t: 'AI Moderation' },
+    { icon: BarChart3, t: 'Sentiment Analysis' },
+    { icon: HeadphonesIcon, t: 'AI Voice Assistant' },
+    { icon: FileText, t: 'Speech to Text' },
+    { icon: ClipboardList, t: 'MCP Integration' },
+    { icon: TrendingUp, t: 'AI Analytics & Insights' },
   ]
   return (
-    <section id="platform" className="py-24 relative">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-40 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-600/10 blur-[120px]" />
-        <div className="absolute bottom-20 right-1/4 w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[120px]" />
-      </div>
+    <section id="features" className="bg-lavender py-24">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge className="glass border-white/10 text-cyan-300 mb-5">Platform</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">Everything you need to build <span className="gradient-text">communication products</span></h2>
-          <p className="mt-4 text-white/60 text-lg">A complete CPaaS with SDKs, APIs and AI baked in — from prototype to planet scale.</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            <span className="text-brand">1000+ AI CPaaS Features</span> to Build Any App
+          </h2>
+          <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+            Create a top-notch user experience with all the modern communication features, &amp; customize it exactly how you want with our flexible APIs and SDKs.
+          </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.6, delay: (i%4)*0.08 }}
-              whileHover={{ y: -6 }}
-              className="group relative rounded-3xl glass p-6 hover:glass-strong transition-all overflow-hidden"
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+          {features.map((f,i)=>(
+            <motion.div key={f.t}
+              initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true, margin:'-40px'}}
+              transition={{delay: (i%3)*0.08}}
+              className="card-soft card-soft-hover rounded-2xl p-5 flex items-center gap-4"
             >
-              <div className={`absolute -top-20 -right-20 h-40 w-40 rounded-full bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-30 blur-3xl transition-opacity duration-500`} />
-              <div className={`relative h-12 w-12 rounded-2xl bg-gradient-to-br ${f.color} grid place-items-center mb-4 shadow-lg`}>
-                <f.icon className="h-5 w-5" />
+              <div className="h-11 w-11 rounded-xl bg-icon-chip grid place-items-center shrink-0">
+                <f.icon className="h-5 w-5 text-brand" strokeWidth={1.75} />
               </div>
-              <h3 className="font-display text-lg font-semibold mb-1.5">{f.title}</h3>
-              <p className="text-sm text-white/60 leading-relaxed">{f.desc}</p>
-              <div className="mt-4 flex items-center gap-1 text-xs font-medium text-white/40 group-hover:text-white transition-colors">
-                Learn more <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              <div className="font-semibold text-slate-900">{f.t}</div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ---------------- WE BUILD & MANAGE (image cards) ---------------- */
+function BuildManage() {
+  const items = [
+    { t: 'Activity Feeds & News Feed', d: 'Show what people post or share instantly on a user’s feed. Allow users to like, comment, or share content from others.', tag: 'from-blue-500 to-indigo-600', icon: Layers },
+    { t: 'Custom AI Voice Agent', d: 'Create intelligent AI voice agents that understand intent, analyse sentiment and talk like a human agent to users on your platform.', tag: 'from-cyan-500 to-blue-600', icon: Mic },
+    { t: 'AI Video KYC', d: 'Quickly and securely verify customer identities in minutes with KineTalk’s AI-powered, video-enabled KYC API to streamline onboarding.', tag: 'from-red-500 to-rose-600', icon: ScanFace },
+    { t: 'Contact Center Cloud', d: 'Omnichannel contact center with AI copilots for agents, live monitoring, IVR flows and unified customer history.', tag: 'from-emerald-500 to-teal-600', icon: HeadphonesIcon },
+    { t: 'Developer Console', d: 'Full-featured dashboard for API keys, environments, logs, metrics, webhooks and role-based access for your entire team.', tag: 'from-slate-700 to-slate-900', icon: Code2 },
+    { t: 'AI Video Analytics', d: 'Extract topics, emotions and action items from every video meeting with automatic transcripts, summaries and insights.', tag: 'from-purple-500 to-fuchsia-600', icon: BrainCircuit },
+  ]
+  return (
+    <section id="solutions" className="bg-lavender py-24 border-t border-slate-100">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            We <span className="text-brand">Build &amp; Manage</span> It All For You, <span className="text-slate-900">End-to-End!</span>
+          </h2>
+          <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+            Looking for something beyond in-app communication capabilities? We’ve got you covered. Explore our extensively feature-rich CPaaS solution.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((it,i)=>(
+            <motion.div key={it.t}
+              initial={{opacity:0, y:30}} whileInView={{opacity:1, y:0}} viewport={{once:true, margin:'-40px'}}
+              transition={{delay:(i%3)*0.08}}
+              className="card-soft card-soft-hover rounded-3xl overflow-hidden"
+            >
+              <div className={`h-56 bg-gradient-to-br ${it.tag} relative overflow-hidden`}>
+                <div className="absolute inset-0 grid-lines opacity-20" />
+                <it.icon className="absolute right-6 top-6 h-8 w-8 text-white/80" strokeWidth={1.5} />
+                <div className="absolute inset-0 grid place-items-center">
+                  <it.icon className="h-24 w-24 text-white/25" strokeWidth={1.2} />
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="font-display text-xl font-bold text-slate-900 mb-2">{it.t}</h3>
+                <p className="text-sm text-slate-600 leading-relaxed">{it.d}</p>
+                <a href="#" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:gap-2 transition-all border-b-2 border-brand pb-0.5">More info</a>
               </div>
             </motion.div>
           ))}
@@ -432,184 +331,87 @@ function FeatureGrid() {
   )
 }
 
-/* ---------------- AI Section ---------------- */
-function AISection() {
+/* ---------------- DEPLOY ANYWHERE ---------------- */
+function DeployAnywhere() {
+  const cards = [
+    { t: 'On-premise', d: 'Deploy your real-time communication infrastructure on your own on-prem server.', icon: Server },
+    { t: 'Private Cloud', d: 'Keep the data and infrastructure in your control running on an isolated cloud environment.', icon: Cloud },
+    { t: 'Third-Party DC', d: 'Run the app on dedicated servers hosted at an external co-location provider.', icon: Database },
+    { t: 'Hybrid Cloud', d: 'Flexibly deploy messaging workloads across your own infrastructure or cloud.', icon: Lock },
+  ]
   return (
-    <section id="ai" className="py-28 relative">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full bg-purple-600/15 blur-[140px]" />
+    <section className="py-24 bg-white">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            Deploy Anywhere, <span className="text-brand">On Any Server</span>
+          </h2>
+          <p className="mt-4 text-lg text-slate-600">Host the solution on your preferred server or infrastructure and retain full control over your environment.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+          {cards.map((c,i)=>(
+            <motion.div key={c.t}
+              initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}}
+              transition={{delay:i*0.08}}
+              className="bg-lavender rounded-3xl p-8 text-center hover:bg-lavender-2 transition"
+            >
+              <div className="h-24 w-24 mx-auto rounded-2xl bg-white grid place-items-center mb-5 shadow-sm">
+                <c.icon className="h-11 w-11 text-brand" strokeWidth={1.5} />
+              </div>
+              <h3 className="font-display text-xl font-bold text-slate-900 mb-3">{c.t}</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">{c.d}</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-14 flex items-center justify-center gap-4 flex-wrap">
+          <p className="text-slate-700">Ready to build an <span className="font-semibold">On-Premise Chat &amp; Call App</span> for enterprises?</p>
+          <button className="inline-flex items-center gap-2 h-11 px-5 rounded-full border-2 border-brand text-brand font-semibold text-sm hover:bg-brand hover:text-white transition">
+            Try Our Live Demo! <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
+    </section>
+  )
+}
+
+/* ---------------- SECURITY ---------------- */
+function Security() {
+  return (
+    <section id="enterprise" className="py-24 bg-white">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="relative order-2 lg:order-1">
-            {/* AI Brain visualization */}
-            <div className="relative aspect-square max-w-lg mx-auto">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-cyan-400/20 blur-3xl" />
-              <div className="absolute inset-8 rounded-full glass-strong grid place-items-center">
-                <div className="absolute inset-4 rounded-full border border-white/10 animate-spin-slow" />
-                <div className="absolute inset-10 rounded-full border border-white/10 animate-spin-slow" style={{animationDirection:'reverse', animationDuration:'25s'}}/>
-                <div className="absolute inset-16 rounded-full border border-white/10 animate-spin-slow" style={{animationDuration:'30s'}} />
-                <BrainCircuit className="h-24 w-24 text-transparent bg-gradient-to-br from-blue-400 via-purple-400 to-cyan-300 bg-clip-text" style={{stroke:'url(#brainG)'}} />
-                <svg width="0" height="0"><defs><linearGradient id="brainG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#60a5fa"/><stop offset="50%" stopColor="#a78bfa"/><stop offset="100%" stopColor="#22d3ee"/></linearGradient></defs></svg>
-              </div>
-              {['GPT-4','Claude','Gemini','DeepSeek','Llama','Mistral'].map((m,i)=>{
-                const angle = (i / 6) * Math.PI * 2
-                const x = 50 + 42 * Math.cos(angle)
-                const y = 50 + 42 * Math.sin(angle)
-                return (
-                  <motion.div
-                    key={m}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="absolute glass-strong rounded-xl px-3 py-1.5 text-xs font-medium -translate-x-1/2 -translate-y-1/2"
-                    style={{ left: `${x}%`, top: `${y}%` }}
-                  >
-                    {m}
-                  </motion.div>
-                )
-              })}
-            </div>
-          </div>
-          <div className="order-1 lg:order-2">
-            <Badge className="glass border-white/10 text-purple-300 mb-5"><Sparkles className="h-3 w-3 mr-1"/> KineTalk AI</Badge>
-            <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              An <span className="gradient-text">AI operating system</span> for every conversation
+          <div>
+            <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
+              The Globally Trusted CPaaS Solution For <span className="text-brand">Our Security</span> &amp; <span className="text-brand">Privacy</span> Standards
             </h2>
-            <p className="mt-5 text-white/60 text-lg">Bring your model or use ours. Deploy voice agents, chatbots, knowledge assistants, moderation and call intelligence — all with a single API.</p>
-            <div className="mt-8 grid sm:grid-cols-2 gap-3">
-              {[
-                { icon: Bot, t: 'AI Voice Agent', d: 'Human-quality voice, sub-500ms latency' },
-                { icon: MessageSquare, t: 'AI Chatbot', d: 'RAG on your knowledge base' },
-                { icon: PenTool, t: 'Call Summary', d: 'Auto notes, action items, sentiment' },
-                { icon: Search, t: 'AI Search', d: 'Semantic search across all channels' },
-                { icon: BarChart3, t: 'AI Analytics', d: 'Deep intent, topic and CSAT insights' },
-                { icon: Wand2, t: 'AI Routing', d: 'Route by intent, skill and mood' },
-              ].map(x => (
-                <div key={x.t} className="glass rounded-2xl p-4 hover:glass-strong transition">
-                  <x.icon className="h-4 w-4 text-cyan-300 mb-2" />
-                  <div className="font-semibold text-sm">{x.t}</div>
-                  <div className="text-xs text-white/50 mt-0.5">{x.d}</div>
-                </div>
+            <p className="mt-5 text-lg text-slate-600 leading-relaxed">
+              Every user on your app deserves a safe and comfortable space where they can chat or call others without risking their personal info. That’s why your chat apps will have end-to-end encryption with KineTalk.
+            </p>
+            <ul className="mt-8 space-y-3">
+              {['End-to-end encryption (TLS / SSL / AES)','SOC 2 Type II · HIPAA · GDPR compliant','ISO 27001 · PCI-DSS aligned infrastructure','Regional data residency across 12+ regions','Bring your own key (BYOK) support','24/7 security operations center'].map(x=>(
+                <li key={x} className="flex items-start gap-3 text-slate-700">
+                  <div className="h-6 w-6 rounded-full bg-emerald-100 grid place-items-center shrink-0 mt-0.5"><Check className="h-3.5 w-3.5 text-emerald-600" /></div>
+                  {x}
+                </li>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------------- Developer Experience ---------------- */
-function DevExperience() {
-  const snippets = {
-    'Node.js': `import { KineTalk } from '@kinetalk/node'
-
-const kt = new KineTalk({ apiKey: process.env.KT_KEY })
-
-// Send a message
-await kt.channels.messages.send({
-  channel: 'support',
-  user: 'u_483',
-  text: 'Welcome to KineTalk 👋',
-})
-
-// Spin up an AI voice agent
-const agent = await kt.ai.agents.create({
-  voice: 'nova',
-  model: 'gpt-4o',
-  tools: ['crm.lookup', 'ticket.create'],
-})`,
-    'Python': `from kinetalk import KineTalk
-
-kt = KineTalk(api_key=os.environ["KT_KEY"])
-
-kt.channels.messages.send(
-    channel="support",
-    user="u_483",
-    text="Welcome to KineTalk 👋",
-)
-
-agent = kt.ai.agents.create(
-    voice="nova",
-    model="claude-3-5-sonnet",
-    tools=["crm.lookup"],
-)`,
-    'React': `import { useKineTalkChat } from '@kinetalk/react'
-
-export default function Chat() {
-  const { messages, send, typing } = useKineTalkChat({
-    channel: 'support',
-    aiAgent: 'agent_nova',
-  })
-
-  return (
-    <ChatUI
-      messages={messages}
-      onSend={send}
-      typing={typing}
-    />
-  )
-}`,
-    'Go': `package main
-
-import "github.com/kinetalk/go-sdk"
-
-func main() {
-    kt := kinetalk.New(os.Getenv("KT_KEY"))
-
-    kt.Channels.Send(&kinetalk.Message{
-        Channel: "support",
-        User:    "u_483",
-        Text:    "Welcome to KineTalk",
-    })
-}`,
-    'Swift': `import KineTalk
-
-let kt = KineTalk(apiKey: Env.KT_KEY)
-
-try await kt.channels.send(
-  Message(channel: "support", user: "u_483",
-          text: "Welcome to KineTalk"))`,
-  }
-  const [tab, setTab] = useState('Node.js')
-  return (
-    <section id="developers" className="py-24 relative">
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="grid lg:grid-cols-5 gap-12 items-center">
-          <div className="lg:col-span-2">
-            <Badge className="glass border-white/10 text-emerald-300 mb-5"><Code2 className="h-3 w-3 mr-1"/> Developers</Badge>
-            <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-tight">Built by developers, <br/>for <span className="gradient-text">developers</span></h2>
-            <p className="mt-5 text-white/60 text-lg">First-class SDKs for every stack. REST, GraphQL, WebRTC and WebSocket APIs. Prototype in minutes, deploy in production.</p>
-            <div className="mt-8 flex flex-wrap gap-2">
-              {['REST','GraphQL','WebSocket','WebRTC','SIP','CLI','GitHub'].map(t=>(
-                <span key={t} className="px-3 py-1.5 rounded-full glass text-xs text-white/80">{t}</span>
-              ))}
-            </div>
+            </ul>
             <div className="mt-8 flex gap-3">
-              <Button className="btn-glow text-white rounded-xl border-0">View Docs <ArrowRight className="ml-2 h-4 w-4"/></Button>
-              <Button variant="outline" className="rounded-xl border-white/15 bg-white/5 hover:bg-white/10"><Github className="mr-2 h-4 w-4"/> GitHub</Button>
+              <button className="btn-red-solid inline-flex items-center h-11 px-6 rounded-lg text-sm font-semibold">Request Demo <ArrowRight className="ml-2 h-4 w-4" /></button>
+              <button className="btn-red-outline inline-flex items-center h-11 px-6 rounded-lg text-sm font-semibold">Talk to Security</button>
             </div>
           </div>
-          <div className="lg:col-span-3">
-            <div className="rounded-3xl glass-strong p-4 glow-blue overflow-hidden">
-              <div className="flex items-center justify-between mb-3 px-2">
-                <div className="flex gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-red-400/70"/>
-                  <div className="h-3 w-3 rounded-full bg-yellow-400/70"/>
-                  <div className="h-3 w-3 rounded-full bg-green-400/70"/>
+          <div className="relative aspect-square max-w-lg mx-auto">
+            <div className="absolute inset-0 bg-lavender rounded-[3rem] rotate-3"></div>
+            <div className="absolute inset-4 bg-white rounded-[2.75rem] card-soft grid place-items-center overflow-hidden">
+              <div className="absolute inset-0 dot-grid opacity-40" />
+              <div className="relative h-40 w-40 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 grid place-items-center shadow-2xl shadow-blue-500/40">
+                <Lock className="h-16 w-16 text-white" strokeWidth={1.5} />
+              </div>
+              {[{ x:'8%', y:'12%', t:'AES-256' },{ x:'75%', y:'18%', t:'TLS 1.3' },{ x:'12%', y:'75%', t:'SOC 2' },{ x:'72%', y:'78%', t:'HIPAA' }].map(b=>(
+                <div key={b.t} className="absolute card-soft rounded-full px-3 py-1.5 text-xs font-semibold text-brand animate-float" style={{left:b.x, top:b.y, animationDelay:`${Math.random()*2}s`}}>
+                  {b.t}
                 </div>
-                <div className="text-xs text-white/40 font-mono">kinetalk.sdk</div>
-              </div>
-              <div className="flex gap-1 mb-3 flex-wrap">
-                {Object.keys(snippets).map(k=>(
-                  <button key={k} onClick={()=>setTab(k)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${tab===k?'bg-white/10 text-white':'text-white/50 hover:text-white/80'}`}>{k}</button>
-                ))}
-              </div>
-              <pre className="text-xs md:text-[13px] leading-relaxed p-4 rounded-2xl bg-black/40 overflow-x-auto max-h-[420px]">
-                <code className="font-mono text-white/90">{snippets[tab]}</code>
-              </pre>
+              ))}
             </div>
           </div>
         </div>
@@ -618,97 +420,77 @@ try await kt.channels.send(
   )
 }
 
-/* ---------------- Architecture ---------------- */
-function Architecture() {
-  const layers = [
-    { title: 'Client Apps', icon: Layers, color: 'from-blue-500 to-cyan-400' },
-    { title: 'SDKs', icon: Braces, color: 'from-cyan-400 to-teal-400' },
-    { title: 'Edge Gateway', icon: Zap, color: 'from-teal-400 to-emerald-400' },
-    { title: 'Microservices', icon: Cpu, color: 'from-emerald-400 to-lime-400' },
-    { title: 'Kafka + Redis', icon: Activity, color: 'from-lime-400 to-yellow-400' },
-    { title: 'MongoDB · PG · Storage', icon: Database, color: 'from-yellow-400 to-orange-400' },
-    { title: 'AI Engine', icon: BrainCircuit, color: 'from-orange-400 to-pink-500' },
-    { title: 'Analytics & Admin', icon: BarChart3, color: 'from-pink-500 to-purple-500' },
-  ]
+/* ---------------- AI SECTION ---------------- */
+function AISection() {
   return (
-    <section className="py-28 relative">
+    <section id="products" className="py-24 bg-lavender">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <Badge className="glass border-white/10 text-blue-300 mb-5">Architecture</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">A stack engineered for <span className="gradient-text">planet scale</span></h2>
-          <p className="mt-4 text-white/60 text-lg">Every layer is horizontally scalable, multi-region and observable by default.</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            An <span className="text-brand">AI Operating System</span> For Every Conversation
+          </h2>
+          <p className="mt-4 text-lg text-slate-600">Bring your own model or use ours. Deploy voice agents, chatbots, moderation and analytics through one unified API.</p>
         </div>
-        <div className="relative rounded-3xl glass-strong p-8 md:p-12 overflow-hidden">
-          <div className="absolute inset-0 grid-pattern opacity-30" />
-          <div className="relative grid grid-cols-2 md:grid-cols-4 gap-4">
-            {layers.map((l,i)=>(
-              <motion.div
-                key={l.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i*0.06 }}
-                className="relative group"
-              >
-                <div className="rounded-2xl glass p-5 hover:glass-strong transition h-full">
-                  <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${l.color} grid place-items-center mb-3`}>
-                    <l.icon className="h-4 w-4 text-black"/>
-                  </div>
-                  <div className="text-sm font-semibold">{l.title}</div>
-                  <div className="mt-2 flex items-center gap-1">
-                    {[...Array(3)].map((_,j)=>(
-                      <span key={j} className="h-1 flex-1 rounded-full bg-white/10 overflow-hidden">
-                        <span className="block h-full w-full bg-gradient-to-r from-blue-500 to-purple-500 animate-shimmer"/>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+          {[
+            { i: Bot, t: 'AI Voice Agent', d: 'Human-quality voice with sub-500ms latency.' },
+            { i: MessageSquare, t: 'AI Chatbot', d: 'Retrieval-augmented chat over your knowledge base.' },
+            { i: PenTool, t: 'AI Call Summary', d: 'Auto notes, action items and sentiment for every call.' },
+            { i: Search, t: 'AI Search', d: 'Semantic search across chat, voice and video history.' },
+            { i: Wand2, t: 'AI Routing', d: 'Route conversations by intent, skill and mood.' },
+            { i: BrainCircuit, t: 'BYO LLM', d: 'GPT-4o, Claude 3.5, Gemini, DeepSeek or custom.' },
+          ].map((x,i)=>(
+            <motion.div key={x.t}
+              initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{delay:i*0.05}}
+              className="card-soft card-soft-hover rounded-3xl p-6"
+            >
+              <div className="h-12 w-12 rounded-xl bg-icon-chip grid place-items-center mb-4">
+                <x.i className="h-6 w-6 text-brand" strokeWidth={1.75} />
+              </div>
+              <h3 className="font-display text-lg font-bold text-slate-900">{x.t}</h3>
+              <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">{x.d}</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+          <span className="text-sm text-slate-600 font-medium">Works with:</span>
+          {['OpenAI GPT-4o','Anthropic Claude','Google Gemini','DeepSeek','Meta Llama','Mistral'].map(m=>(
+            <span key={m} className="card-soft rounded-full px-4 py-1.5 text-xs font-semibold text-slate-700">{m}</span>
+          ))}
         </div>
       </div>
     </section>
   )
 }
 
-/* ---------------- Industries ---------------- */
+/* ---------------- INDUSTRIES ---------------- */
 function Industries() {
   const items = [
-    { icon: HeartPulse, t: 'Healthcare', d: 'HIPAA-compliant telemedicine, patient messaging.', color: 'from-rose-500 to-pink-500' },
-    { icon: Landmark, t: 'FinTech', d: 'KYC video calls, secure banking chat, fraud AI.', color: 'from-emerald-500 to-teal-500' },
-    { icon: GraduationCap, t: 'Education', d: 'Live classes, tutoring, cohort communities.', color: 'from-amber-500 to-orange-500' },
-    { icon: ShoppingBag, t: 'Ecommerce', d: 'Live shopping, WhatsApp commerce, AI CS.', color: 'from-purple-500 to-fuchsia-500' },
-    { icon: Building2, t: 'Government', d: 'Citizen support, compliant recording, IVR.', color: 'from-blue-500 to-indigo-500' },
-    { icon: Plane, t: 'Travel', d: 'Rebooking bots, itinerary chat, voice concierge.', color: 'from-cyan-500 to-sky-500' },
-    { icon: Gamepad2, t: 'Gaming', d: 'Voice rooms, guild chat, live moderation.', color: 'from-violet-500 to-purple-600' },
-    { icon: Truck, t: 'Logistics', d: 'Driver dispatch, delivery notifications, POD.', color: 'from-lime-500 to-emerald-500' },
-    { icon: Factory, t: 'Manufacturing', d: 'Floor comms, safety alerts, shift handoffs.', color: 'from-orange-500 to-red-500' },
+    { i: HeartPulse, t: 'Healthcare' }, { i: Landmark, t: 'FinTech' },
+    { i: GraduationCap, t: 'Education' }, { i: ShoppingBag, t: 'Ecommerce' },
+    { i: Building2, t: 'Government' }, { i: Plane, t: 'Travel' },
+    { i: Gamepad2, t: 'Gaming' }, { i: Truck, t: 'Logistics' },
+    { i: Factory, t: 'Manufacturing' }, { i: Rocket, t: 'Startups' },
   ]
   return (
-    <section id="industries" className="py-24 relative">
+    <section id="developers" className="py-24 bg-white">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <Badge className="glass border-white/10 text-fuchsia-300 mb-5">Industries</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">Powering conversations across <span className="gradient-text">every industry</span></h2>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            Powering <span className="text-brand">Every Industry</span>
+          </h2>
+          <p className="mt-4 text-lg text-slate-600">From telemedicine to gaming, KineTalk scales with your business.</p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((it, i) => (
-            <motion.div
-              key={it.t}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (i%3)*0.08 }}
-              whileHover={{ y: -4 }}
-              className="group rounded-3xl glass p-6 hover:glass-strong transition relative overflow-hidden"
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-6xl mx-auto">
+          {items.map((x,i)=>(
+            <motion.div key={x.t}
+              initial={{opacity:0, scale:0.9}} whileInView={{opacity:1, scale:1}} viewport={{once:true}} transition={{delay:(i%5)*0.05}}
+              className="card-soft card-soft-hover rounded-2xl p-5 text-center"
             >
-              <div className={`absolute -top-16 -right-16 h-32 w-32 rounded-full bg-gradient-to-br ${it.color} opacity-20 group-hover:opacity-40 blur-2xl transition`} />
-              <div className={`relative h-11 w-11 rounded-2xl bg-gradient-to-br ${it.color} grid place-items-center mb-4`}>
-                <it.icon className="h-5 w-5"/>
+              <div className="h-14 w-14 rounded-2xl bg-icon-chip mx-auto grid place-items-center mb-3">
+                <x.i className="h-6 w-6 text-brand" strokeWidth={1.5} />
               </div>
-              <div className="font-display text-lg font-semibold">{it.t}</div>
-              <div className="text-sm text-white/60 mt-1">{it.d}</div>
+              <div className="font-semibold text-slate-900 text-sm">{x.t}</div>
             </motion.div>
           ))}
         </div>
@@ -717,197 +499,7 @@ function Industries() {
   )
 }
 
-/* ---------------- Why KineTalk ---------------- */
-function WhyKineTalk() {
-  const items = [
-    { icon: Rocket, t: 'API First' }, { icon: Braces, t: 'SDK First' },
-    { icon: Cloud, t: 'Cloud or Self-Hosted' }, { icon: Shield, t: 'Enterprise Ready' },
-    { icon: Globe2, t: 'Global Infrastructure' }, { icon: Zap, t: 'Unlimited Scale' },
-    { icon: Sparkles, t: 'AI Native' }, { icon: Lock, t: 'Security First' },
-  ]
-  return (
-    <section className="py-24 relative">
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <Badge className="glass border-white/10 text-cyan-300 mb-5">Why KineTalk</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">The advantage that <span className="gradient-text">compounds</span></h2>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {items.map((it,i)=>(
-            <motion.div
-              key={it.t}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i*0.05 }}
-              className="rounded-3xl glass p-6 flex items-center gap-3 hover:glass-strong transition"
-            >
-              <div className="h-10 w-10 rounded-xl bg-white/5 grid place-items-center">
-                <it.icon className="h-5 w-5 text-cyan-300"/>
-              </div>
-              <div className="font-medium text-sm">{it.t}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------------- Dashboard Preview ---------------- */
-function DashboardPreview() {
-  return (
-    <section className="py-24 relative">
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <Badge className="glass border-white/10 text-purple-300 mb-5">Admin Console</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">A dashboard your ops team will <span className="gradient-text">actually love</span></h2>
-        </div>
-        <div className="rounded-3xl glass-strong p-3 glow-purple">
-          <div className="rounded-2xl bg-[#0a0a14]/80 p-6 grid lg:grid-cols-4 gap-4">
-            {/* Sidebar */}
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 px-3 py-2">
-                <img src={LOGO} alt="" className="h-6 w-6 rounded bg-white/95 p-0.5"/>
-                <span className="font-display font-bold text-sm">KineTalk</span>
-              </div>
-              {['Overview','Messages','Voice','Video','AI Agents','Analytics','Billing','Settings'].map((l,i)=>(
-                <div key={l} className={`px-3 py-2 rounded-lg text-sm ${i===0?'bg-white/10 text-white':'text-white/50 hover:text-white'}`}>{l}</div>
-              ))}
-            </div>
-            {/* Main */}
-            <div className="lg:col-span-3 space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[
-                  { l: 'Revenue', v: '$284,921', d: '+18.2%', c: 'from-blue-500 to-cyan-500' },
-                  { l: 'Users', v: '48,214', d: '+12.4%', c: 'from-purple-500 to-pink-500' },
-                  { l: 'Calls', v: '1.2M', d: '+22.9%', c: 'from-emerald-500 to-teal-500' },
-                  { l: 'Messages', v: '38.4M', d: '+9.7%', c: 'from-amber-500 to-orange-500' },
-                ].map(k=>(
-                  <div key={k.l} className="glass rounded-2xl p-4">
-                    <div className="text-[10px] uppercase tracking-wider text-white/50">{k.l}</div>
-                    <div className="font-display text-2xl font-bold mt-1">{k.v}</div>
-                    <div className={`text-xs mt-1 bg-gradient-to-r ${k.c} bg-clip-text text-transparent font-medium`}>{k.d}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="glass rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <div className="font-semibold">Traffic Overview</div>
-                    <div className="text-xs text-white/50">Last 30 days · realtime</div>
-                  </div>
-                  <div className="flex gap-1">
-                    {['24h','7d','30d','90d'].map((t,i)=>(
-                      <span key={t} className={`px-2.5 py-1 rounded-md text-xs ${i===2?'bg-white/10':''} text-white/70`}>{t}</span>
-                    ))}
-                  </div>
-                </div>
-                <svg viewBox="0 0 400 120" className="w-full h-32">
-                  <defs>
-                    <linearGradient id="d1" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#3b82f6"/><stop offset="100%" stopColor="#22d3ee"/>
-                    </linearGradient>
-                    <linearGradient id="d2" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#a78bfa"/><stop offset="100%" stopColor="#ec4899"/>
-                    </linearGradient>
-                    <linearGradient id="d1f" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4"/><stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M0,90 C40,70 80,80 120,60 C160,45 200,55 240,35 C280,20 320,30 360,15 L400,10 L400,120 L0,120 Z" fill="url(#d1f)"/>
-                  <path d="M0,90 C40,70 80,80 120,60 C160,45 200,55 240,35 C280,20 320,30 360,15 L400,10" fill="none" stroke="url(#d1)" strokeWidth="2"/>
-                  <path d="M0,100 C40,95 80,88 120,80 C160,75 200,70 240,60 C280,55 320,48 360,40 L400,35" fill="none" stroke="url(#d2)" strokeWidth="2" strokeDasharray="4 3"/>
-                </svg>
-              </div>
-              <div className="grid md:grid-cols-2 gap-3">
-                <div className="glass rounded-2xl p-5">
-                  <div className="text-sm font-semibold mb-3">Live Channels</div>
-                  <div className="space-y-2">
-                    {['#support','#sales','#onboarding','#vip-clients'].map((c,i)=>(
-                      <div key={c} className="flex items-center justify-between text-sm">
-                        <span className="text-white/80">{c}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-white/50">{[124,89,42,17][i]} active</span>
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"/>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="glass rounded-2xl p-5">
-                  <div className="text-sm font-semibold mb-3">Regional Latency</div>
-                  <div className="space-y-2.5">
-                    {[['US-East','32ms',95],['EU-West','48ms',85],['AP-South','61ms',75],['SA-East','88ms',65]].map(([r,ms,w])=>(
-                      <div key={r}>
-                        <div className="flex justify-between text-xs text-white/60 mb-1"><span>{r}</span><span>{ms}</span></div>
-                        <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                          <div className="h-full rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-400" style={{width: `${w}%`}}/>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------------- Pricing ---------------- */
-function Pricing() {
-  const tiers = [
-    { name: 'Starter', price: '$0', d: 'For hobby projects & prototypes', feats: ['10k messages/mo','100 voice minutes','Community support','Basic analytics'], cta: 'Start Free', highlight: false },
-    { name: 'Growth', price: '$499', d: 'For scaling products & teams', feats: ['5M messages/mo','50k voice minutes','AI Agents included','Priority support','SSO & audit logs'], cta: 'Start Trial', highlight: true },
-    { name: 'Enterprise', price: 'Custom', d: 'For mission-critical workloads', feats: ['Unlimited scale','Dedicated infra','Self-hosted option','24/7 white-glove','Custom SLAs & compliance'], cta: 'Contact Sales', highlight: false },
-  ]
-  return (
-    <section id="pricing" className="py-24 relative">
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <Badge className="glass border-white/10 text-emerald-300 mb-5">Pricing</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">Simple pricing. <span className="gradient-text">Infinite scale.</span></h2>
-          <p className="mt-4 text-white/60 text-lg">Start free. Pay only as you grow.</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-5 max-w-6xl mx-auto">
-          {tiers.map((t,i)=>(
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i*0.1 }}
-              className={`relative rounded-3xl p-8 ${t.highlight ? 'gradient-border glass-strong glow-purple' : 'glass'}`}
-            >
-              {t.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-500 to-purple-600">Most Popular</div>
-              )}
-              <div className="font-display text-xl font-bold">{t.name}</div>
-              <div className="text-sm text-white/50 mt-1">{t.d}</div>
-              <div className="mt-6 flex items-baseline gap-1">
-                <span className="font-display text-5xl font-bold">{t.price}</span>
-                {t.price !== 'Custom' && <span className="text-white/50">/mo</span>}
-              </div>
-              <Button className={`w-full mt-6 rounded-xl h-11 ${t.highlight ? 'btn-glow border-0 text-white' : 'bg-white/5 hover:bg-white/10 border border-white/10'}`}>{t.cta}</Button>
-              <div className="mt-8 space-y-3">
-                {t.feats.map(f=>(
-                  <div key={f} className="flex items-start gap-2.5 text-sm text-white/80">
-                    <Check className="h-4 w-4 mt-0.5 text-emerald-400 shrink-0"/> {f}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------------- Testimonials ---------------- */
+/* ---------------- TESTIMONIALS ---------------- */
 function Testimonials() {
   const items = [
     { q: 'KineTalk cut our time-to-launch from 9 months to 6 weeks. The AI agent quality is genuinely a step change.', a: 'Priya S.', r: 'VP Engineering · Vertex Bank' },
@@ -915,31 +507,26 @@ function Testimonials() {
     { q: 'The dashboard is the first admin console engineers actually enjoy using. AI summaries are gold.', a: 'Nia W.', r: 'Head of Product · Northwind' },
   ]
   return (
-    <section className="py-24 relative">
+    <section className="py-24 bg-lavender">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <Badge className="glass border-white/10 text-yellow-300 mb-5">Customer Stories</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">Loved by teams <span className="gradient-text">shipping the future</span></h2>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            Loved By Teams <span className="text-brand">Shipping The Future</span>
+          </h2>
         </div>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {items.map((t,i)=>(
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i*0.1 }}
-              className="rounded-3xl glass p-7 hover:glass-strong transition"
+            <motion.div key={i}
+              initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{delay:i*0.08}}
+              className="card-soft card-soft-hover rounded-3xl p-7"
             >
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_,j)=><Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400"/>)}
-              </div>
-              <p className="text-white/85 leading-relaxed">“{t.q}”</p>
+              <div className="flex gap-1 mb-4">{[...Array(5)].map((_,j)=><Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400"/>)}</div>
+              <p className="text-slate-800 leading-relaxed">“{t.q}”</p>
               <div className="mt-5 flex items-center gap-3">
-                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600"/>
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 grid place-items-center text-white text-sm font-bold">{t.a[0]}</div>
                 <div>
-                  <div className="text-sm font-semibold">{t.a}</div>
-                  <div className="text-xs text-white/50">{t.r}</div>
+                  <div className="text-sm font-bold text-slate-900">{t.a}</div>
+                  <div className="text-xs text-slate-500">{t.r}</div>
                 </div>
               </div>
             </motion.div>
@@ -952,53 +539,76 @@ function Testimonials() {
 
 /* ---------------- FAQ ---------------- */
 function FAQ() {
+  const [open, setOpen] = useState(0)
   const faqs = [
-    { q: 'What is KineTalk?', a: 'KineTalk is an AI-native Communication Platform (CPaaS) offering chat, voice, video, AI agents, moderation, translation, contact center and streaming — all through unified APIs and SDKs.' },
-    { q: 'Can I self-host KineTalk?', a: 'Yes. KineTalk runs cloud-hosted or fully self-hosted on your infrastructure with Kubernetes-native deployment, private networking and BYO-cloud options.' },
-    { q: 'Which AI models can I use?', a: 'Bring OpenAI GPT-4o, Claude 3.5, Gemini, DeepSeek, Llama, Mistral or your own custom LLM. Route intelligently with the KineTalk AI Gateway.' },
-    { q: 'What SDKs do you support?', a: 'JavaScript, TypeScript, React, React Native, Vue, Angular, Node.js, Python, Go, Java, Kotlin, Swift and Flutter — all first-class.' },
-    { q: 'How is KineTalk priced?', a: 'Usage-based per message, voice minute and video minute. Growth and Enterprise plans include AI, SSO and premium support with predictable committed pricing.' },
-    { q: 'Do you have SOC2, HIPAA and GDPR compliance?', a: 'Yes. KineTalk is SOC 2 Type II, HIPAA, GDPR, ISO 27001 and PCI-DSS aligned, with regional data residency across 12+ regions.' },
+    { q: 'Does KineTalk support AI agents?', a: 'Yes. KineTalk ships production-ready AI voice agents and AI chatbots with BYO-LLM support (GPT-4o, Claude 3.5, Gemini, DeepSeek, Llama and custom models).' },
+    { q: 'Can I use KineTalk’s CPaaS for both Web and Mobile applications?', a: 'Absolutely. We offer first-class SDKs for React, React Native, Vue, Angular, iOS (Swift), Android (Kotlin) and Flutter — alongside Node, Python and Go backends.' },
+    { q: 'How can KineTalk help you build an AI-powered voice agent?', a: 'Spin up a voice agent in minutes with our voice cloning, RAG, tool-use and telephony integrations. Sub-500ms latency across 12+ regions.' },
+    { q: 'How much does KineTalk CPaaS solution cost?', a: 'Free tier for prototypes. Growth plan from $499/mo for scaling teams. Enterprise pricing is committed & customized — contact sales for a quote.' },
+    { q: 'Is KineTalk’s CPaaS solution secure?', a: 'Yes. SOC 2 Type II, HIPAA, GDPR, ISO 27001 and PCI-DSS aligned. End-to-end encryption with AES-256 and TLS 1.3 across all channels.' },
+    { q: 'Does KineTalk offer a Speech-to-Text API?', a: 'Yes. Realtime STT and TTS across 100+ languages, plus translation, summarization and moderation — all through unified endpoints.' },
   ]
   return (
-    <section className="py-24 relative">
-      <div className="mx-auto max-w-3xl px-6">
+    <section className="py-24 bg-white">
+      <div className="mx-auto max-w-6xl px-6 lg:px-10">
         <div className="text-center mb-12">
-          <Badge className="glass border-white/10 text-blue-300 mb-5">FAQ</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">Questions, <span className="gradient-text">answered</span></h2>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+            <span className="text-brand">Queries</span> You Might Want To Ask
+          </h2>
+          <p className="mt-3 text-slate-600">Solutions for frequently asked queries</p>
         </div>
-        <div className="rounded-3xl glass p-2">
-          <Accordion type="single" collapsible className="space-y-1">
-            {faqs.map((f,i)=>(
-              <AccordionItem key={i} value={`i-${i}`} className="border-white/5 rounded-2xl px-5 data-[state=open]:bg-white/5">
-                <AccordionTrigger className="text-left hover:no-underline font-medium">{f.q}</AccordionTrigger>
-                <AccordionContent className="text-white/60 leading-relaxed">{f.a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        <div className="grid md:grid-cols-2 gap-4">
+          {faqs.map((f,i)=>(
+            <motion.div key={i}
+              initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{delay:(i%2)*0.08}}
+              className="card-soft rounded-2xl overflow-hidden"
+            >
+              <button onClick={()=>setOpen(open===i?-1:i)} className="w-full flex items-center justify-between p-5 text-left">
+                <span className="font-semibold text-slate-900">{f.q}</span>
+                <span className={`h-8 w-8 rounded-full border border-slate-200 grid place-items-center transition ${open===i?'bg-brand border-brand':''}`}>
+                  <ChevronDown className={`h-4 w-4 transition ${open===i?'rotate-180 text-white':'text-slate-500'}`} />
+                </span>
+              </button>
+              <AnimatePresence>
+                {open===i && (
+                  <motion.div initial={{height:0, opacity:0}} animate={{height:'auto', opacity:1}} exit={{height:0, opacity:0}}>
+                    <div className="px-5 pb-5 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">{f.a}</div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
   )
 }
 
-/* ---------------- CTA ---------------- */
-function CTA() {
+/* ---------------- BIG BLUE CTA ---------------- */
+function BigCTA() {
   return (
-    <section className="py-24 relative">
+    <section className="py-20 bg-white">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="relative rounded-[2.5rem] glass-strong p-12 md:p-20 text-center overflow-hidden glow-purple">
-          <div className="absolute inset-0 -z-10">
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-blue-600/30 blur-[100px] animate-float-slow"/>
-            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-purple-600/30 blur-[100px] animate-float-slower"/>
-            <div className="absolute inset-0 grid-pattern opacity-20"/>
-          </div>
-          <Badge className="glass border-white/10 text-cyan-300 mb-6"><Sparkles className="h-3 w-3 mr-1"/> Ready to build?</Badge>
-          <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-tight">Start building with <span className="gradient-text">KineTalk</span> today</h2>
-          <p className="mt-5 text-white/60 text-lg max-w-2xl mx-auto">Free forever tier. No credit card. Prototype in minutes, deploy globally in an afternoon.</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button size="lg" className="btn-glow border-0 text-white rounded-xl h-12 px-8">Start Free <ArrowRight className="ml-2 h-4 w-4"/></Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 rounded-xl border-white/15 bg-white/5 hover:bg-white/10">Talk to Sales</Button>
+        <div className="relative rounded-[2rem] overflow-hidden" style={{background:'linear-gradient(135deg, #1E40FF 0%, #2E4EF7 50%, #3B5BFF 100%)'}}>
+          <div className="absolute inset-0 grid-lines opacity-20" />
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
+          <div className="relative p-10 md:p-16 text-center">
+            <div className="inline-flex items-center gap-3 mb-6">
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_,i)=><Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400"/>)}
+              </div>
+              <span className="text-white font-bold">4.5</span>
+              <span className="text-white/80 text-sm">Based on 100+ reviews on G2, Clutch &amp; Capterra</span>
+            </div>
+            <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight">
+              Ready To Build Your Own 100% <span className="highlight-yellow">Customizable</span><br/>
+              Video, Voice &amp; Chat <span className="highlight-yellow">Platform?</span>
+            </h2>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <button className="btn-red-solid inline-flex items-center h-12 px-8 rounded-lg text-base font-semibold">Request Demo <ArrowRight className="ml-2 h-4 w-4"/></button>
+              <button className="inline-flex items-center h-12 px-8 rounded-lg text-base font-semibold bg-white text-brand hover:bg-slate-100 transition">Contact Sales</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1006,80 +616,80 @@ function CTA() {
   )
 }
 
-/* ---------------- Footer ---------------- */
+/* ---------------- FOOTER ---------------- */
 function Footer() {
   const cols = [
-    { t: 'Platform', l: ['Overview','Chat SDK','Voice SDK','Video SDK','Live Streaming','AI Agents','Contact Center'] },
-    { t: 'Developers', l: ['Documentation','API Reference','SDKs','Tutorials','GitHub','CLI','Status'] },
-    { t: 'Solutions', l: ['Healthcare','FinTech','Education','Government','Ecommerce','Gaming'] },
-    { t: 'Company', l: ['About','Careers','Partners','Blog','Press','Contact'] },
-    { t: 'Legal', l: ['Security','Privacy','Terms','Compliance','DPA','SOC 2'] },
+    { t: 'PRODUCTS', l: ['HD Video Calling API','HQ Voice Calling SDK','In-app Chat API','Self Hosted Chat & Call','VoIP & SIP Calling','Live Streaming API','Build Video Chat App'] },
+    { t: 'AI AGENTS', l: ['Conversational AI','Custom AI Voice Agent','Whitelabel Chatbot','Speech-to-Text API','AI Contact Center','Selfhosted AI Video KYC','On-Prem AI Consulting','AI Multi-Tenant Agents'] },
+    { t: 'SOLUTIONS', l: ['Telecommunication','Healthcare','Banking & Finance','Social Community','E-Commerce','Online E-learning','Fitness & Wellness','Customer Support','AI Receptionist'] },
+    { t: 'COMPARE', l: ['KineTalk vs Twilio','KineTalk vs Sendbird','KineTalk vs Agora','KineTalk vs Pubnub','KineTalk vs Rocketchat','KineTalk vs Vapi','Zoom Alternative'] },
   ]
   return (
-    <footer className="pt-24 pb-10 relative border-t border-white/5">
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="grid lg:grid-cols-6 gap-10">
+    <footer style={{background:'#2A2A33'}} className="text-slate-300">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-20">
+        <div className="grid lg:grid-cols-5 gap-10">
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <img src={LOGO} alt="KineTalk" className="h-9 w-auto rounded-md bg-white/95 p-1"/>
-              <span className="font-display text-lg font-bold">KineTalk</span>
-            </div>
-            <p className="text-sm text-white/50 leading-relaxed">AI-native communication for the enterprise.</p>
-            <div className="flex gap-2 mt-5">
-              {[Github,Twitter,Linkedin,Youtube].map((I,i)=>(
-                <a key={i} href="#" className="h-9 w-9 rounded-lg glass grid place-items-center hover:glass-strong transition">
-                  <I className="h-4 w-4"/>
+            <div className="text-sm font-bold text-white mb-4">ABOUT KINETALK</div>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              KineTalk is an AI-powered CPaaS provider offering customisable video, voice, chat, live streaming, SIP/VoIP and AI agent solutions for web &amp; mobile apps.
+            </p>
+            <div className="mt-6 flex gap-3">
+              {[Instagram, Facebook, Youtube, Twitter, Linkedin, Github].map((I,i)=>(
+                <a key={i} href="#" className="h-9 w-9 rounded-lg border border-slate-700 grid place-items-center hover:bg-slate-800 hover:border-brand transition">
+                  <I className="h-4 w-4" />
                 </a>
               ))}
+            </div>
+            <div className="mt-8">
+              <div className="text-sm font-bold text-white mb-3">KINETALK INC.</div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                The Hive Workspaces, One Paramount Campus, Level 9, No. 110, Mount Road, San Francisco, CA – 94103, USA.
+              </p>
             </div>
           </div>
           {cols.map(c=>(
             <div key={c.t}>
-              <div className="text-sm font-semibold mb-4">{c.t}</div>
-              <ul className="space-y-2.5">
+              <div className="text-sm font-bold text-white mb-5 tracking-wide">{c.t}</div>
+              <ul className="space-y-3">
                 {c.l.map(x=>(
-                  <li key={x}><a href="#" className="text-sm text-white/50 hover:text-white transition">{x}</a></li>
+                  <li key={x}><a href="#" className="text-sm text-slate-400 hover:text-white transition">{x}</a></li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="mt-16 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-white/40">© 2026 KineTalk, Inc. All rights reserved.</div>
-          <div className="flex items-center gap-4 text-xs text-white/40">
-            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"/> All systems operational</span>
-            <span>·</span>
-            <span>SOC 2 Type II</span>
-            <span>·</span>
-            <span>HIPAA</span>
-            <span>·</span>
-            <span>GDPR</span>
+        <div className="mt-16 pt-8 border-t border-slate-800">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <img src={LOGO} alt="" className="h-8 w-auto bg-white p-1 rounded" />
+            <div className="flex gap-6 text-sm text-slate-400">
+              {['About Company','Terms & Conditions','Privacy Policy','Refund Policy','Request Demo'].map(x=>(
+                <a key={x} href="#" className="hover:text-white transition">{x}</a>
+              ))}
+            </div>
           </div>
+          <div className="mt-6 text-center text-xs text-slate-500">© KineTalk Inc, 2026. All Rights Reserved.</div>
         </div>
       </div>
     </footer>
   )
 }
 
-/* ---------------- Main App ---------------- */
+/* ---------------- MAIN APP ---------------- */
 function App() {
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      <CursorGlow />
+    <main className="min-h-screen bg-white">
       <Nav />
       <Hero />
-      <SocialProof />
-      <FeatureGrid />
+      <TrustBar />
+      <FeaturesGrid />
+      <BuildManage />
+      <DeployAnywhere />
+      <Security />
       <AISection />
-      <DevExperience />
-      <Architecture />
       <Industries />
-      <WhyKineTalk />
-      <DashboardPreview />
-      <Pricing />
       <Testimonials />
       <FAQ />
-      <CTA />
+      <BigCTA />
       <Footer />
     </main>
   )
