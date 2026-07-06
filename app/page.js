@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, Video, MessageSquare, Radio, Users, Shield, Zap, Code2,
@@ -264,19 +265,19 @@ function Nav({ openLead }) {
         {
           title: 'CHAT FEATURES',
           items: [
-            { i: MessageCircle, t: 'Typing &amp; Read Receipts', d: 'Live indicators, delivery and read states.' },
-            { i: Reply, t: 'Reactions &amp; Threads', d: 'Emoji reactions, quote replies, threaded messages.' },
-            { i: AtSign, t: 'Mentions &amp; Presence', d: '@mentions, custom status and online presence.' },
-            { i: Search, t: 'Message Search', d: 'Full-text search across message history.' },
+            { i: MessageCircle, t: 'Typing &amp; Read Receipts', d: 'Live indicators, delivery and read states.', href: '/features/typing-read-receipts' },
+            { i: Reply, t: 'Reactions &amp; Threads', d: 'Emoji reactions, quote replies, threaded messages.', href: '/features/reactions-threads' },
+            { i: AtSign, t: 'Mentions &amp; Presence', d: '@mentions, custom status and online presence.', href: '/features/mentions-presence' },
+            { i: Search, t: 'Message Search', d: 'Full-text search across message history.', href: '/features/message-search' },
           ],
         },
         {
           title: 'CALL FEATURES',
           items: [
-            { i: Volume2, t: 'Noise Suppression', d: 'Studio-grade audio with echo cancellation.' },
-            { i: VideoIcon, t: 'Recording &amp; Playback', d: 'Cloud recording, transcripts and replay.' },
-            { i: Wifi, t: 'Bandwidth Adaptation', d: 'Dynamic bitrate for spotty networks.' },
-            { i: PhoneIncoming, t: 'Call Queuing', d: 'IVR, hold music, transfer and callback.' },
+            { i: Volume2, t: 'Noise Suppression', d: 'Studio-grade audio with echo cancellation.', href: '/features/noise-suppression' },
+            { i: VideoIcon, t: 'Recording &amp; Playback', d: 'Cloud recording, transcripts and replay.', href: '/features/recording-playback' },
+            { i: Wifi, t: 'Bandwidth Adaptation', d: 'Dynamic bitrate for spotty networks.', href: '/features/bandwidth-adaptation' },
+            { i: PhoneIncoming, t: 'Call Queuing', d: 'IVR, hold music, transfer and callback.', href: '/features/call-queuing' },
           ],
         },
       ],
@@ -330,7 +331,7 @@ function Nav({ openLead }) {
                     <div className="text-xs font-bold tracking-wider text-brand mb-4">{col.title}</div>
                     <div className="grid sm:grid-cols-2 gap-2">
                       {col.items.map(it => (
-                        <a key={it.t} href="#" className="group flex items-start gap-3 p-3 rounded-xl hover:bg-lavender transition">
+                        <Link key={it.t} href={it.href || '#'} onClick={()=>setHovered(null)} className="group flex items-start gap-3 p-3 rounded-xl hover:bg-lavender transition">
                           <div className="h-10 w-10 rounded-lg bg-icon-chip grid place-items-center shrink-0 group-hover:bg-brand transition">
                             <it.i className="h-5 w-5 text-brand group-hover:text-white transition" strokeWidth={1.75} />
                           </div>
@@ -338,7 +339,7 @@ function Nav({ openLead }) {
                             <div className="font-semibold text-slate-900 text-sm" dangerouslySetInnerHTML={{__html: it.t}} />
                             <div className="text-xs text-slate-500 mt-0.5" dangerouslySetInnerHTML={{__html: it.d}} />
                           </div>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -1040,7 +1041,6 @@ function App() {
     <main className="min-h-screen bg-white">
       <Nav openLead={openLead} />
       <Hero openLead={openLead} />
-      <TrustBar />
       <TwoProducts openLead={openLead} />
       <FeaturesGrid />
       <Platforms />
