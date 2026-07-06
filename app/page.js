@@ -276,7 +276,7 @@ function Nav({ openLead }) {
     >
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
-          <a href="#" className="flex items-center gap-2"><img src={LOGO} alt="KineTalk" className="h-10 w-auto" /></a>
+          <a href="#" className="flex items-center gap-2"><img src={LOGO} alt="KineTalk" className="h-14 md:h-16 w-auto" /></a>
           <nav className="hidden lg:flex items-center gap-1">
             {keys.map(k => (
               <button
@@ -969,7 +969,7 @@ function Footer() {
         <div className="grid lg:grid-cols-5 gap-10">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-5">
-              <img src={LOGO} alt="KineTalk" className="h-10 w-auto bg-white p-1 rounded" />
+              <img src={LOGO} alt="KineTalk" className="h-14 w-auto bg-white p-1.5 rounded-lg" />
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               KineTalk provides developer-first Chat and Call SDKs that drop into any web or mobile app. Ship messaging, voice and video in days — keep full control of your data.
