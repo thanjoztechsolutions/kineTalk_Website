@@ -40,16 +40,32 @@ function LeadModal({ state, close }) {
     e.preventDefault()
     setStatus('loading'); setError('')
     try {
-      const res = await fetch('/api/leads', {
+      const GOOGLE_FORM_ID = '1FAIpQLSeayT81yUO3-sD15Y_oLUpPf4HWXmmfBq-ngjCAiW5sWYc-UQ'
+      const useCaseLabel = form.useCase === 'chat' ? 'Chat SDK'
+        : form.useCase === 'call' ? 'Call SDK (Voice + Video)'
+        : 'Both Chat & Call SDK'
+      const requestType = mode === 'sales' ? 'Sales Enquiry' : 'Demo Request'
+      const messageWithType = `[${requestType}] ${form.message || '-'}`
+
+      const params = new URLSearchParams()
+      params.append('entry.1063697731', form.name)
+      params.append('entry.922969103', form.email)
+      params.append('entry.2018270150', form.company)
+      params.append('entry.160267611', form.phone)
+      params.append('entry.79650993', form.country)
+      params.append('entry.537894214', useCaseLabel)
+      params.append('entry.2032335774', messageWithType)
+
+      await fetch(`https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, type: mode, source: 'website' }),
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Something went wrong')
+      // no-cors returns opaque response — we assume success if fetch didn't throw
       setStatus('success')
     } catch (err) {
-      setStatus('error'); setError(err.message)
+      setStatus('error'); setError(err.message || 'Could not submit. Please try again.')
     }
   }
 
@@ -275,8 +291,8 @@ function Nav({ openLead }) {
       className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled || hovered ? 'bg-white shadow-[0_1px_0_rgba(15,23,42,0.06)]' : 'bg-white'}`}
     >
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
-        <div className="flex items-center justify-between h-20">
-          <a href="#" className="flex items-center gap-2"><img src={LOGO} alt="KineTalk" className="h-14 md:h-16 w-auto" /></a>
+        <div className="flex items-center justify-between h-24">
+          <a href="#" className="flex items-center gap-2"><img src={LOGO} alt="KineTalk" className="h-16 md:h-20 w-auto" /></a>
           <nav className="hidden lg:flex items-center gap-1">
             {keys.map(k => (
               <button
